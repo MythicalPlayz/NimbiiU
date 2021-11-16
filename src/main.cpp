@@ -1,0 +1,138 @@
+#include <SDL2/SDL.h>
+#include "system/SDLSystem.h"
+#include "gui/GuiFrame.h"
+#include "gui/GuiButton.h"
+#include "gui/GuiController.h"
+#include "menu/MainWindow.h"
+#include "menu/MainComponents.h"
+#include "input/SDLController.h"
+#include "input/SDLControllerMouse.h"
+#include "input/ControllerManager.h"
+
+#include <cstdio>
+#include <fcntl.h>
+
+
+#if defined _WIN32
+#include <windows.h>
+#endif
+
+#ifdef __WIIU__
+#include <whb/log.h>
+#include <whb/log_cafe.h>
+#include <whb/log_udp.h>  
+#include <whb/proc.h>
+#endif
+
+
+int main(int argc, char *args[]) {
+    auto *system = new SDLSystem();
+#if defined _WIN32
+    // Create the Console
+    AllocConsole();
+
+    // Create Console Output Handle
+    HANDLE handle_out = GetStdHandle(STD_OUTPUT_HANDLE);
+    int hCrt = _open_osfhandle((intptr_t) handle_out, _O_TEXT);
+    FILE *hf_out = _fdopen(hCrt, "w");
+    setvbuf(hf_out, NULL, _IONBF, 1);
+    *stdout = *hf_out;
+
+    // Create Console Input Handle
+    HANDLE handle_in = GetStdHandle(STD_INPUT_HANDLE);
+    hCrt = _open_osfhandle((intptr_t) handle_in, _O_TEXT);
+    FILE *hf_in = _fdopen(hCrt, "r");
+    setvbuf(hf_in, NULL, _IONBF, 128);
+
+    *stdin = *hf_in;
+#elif __WIIU__
+    WHBProcInit();
+    WHBLogUdpInit();
+    WHBLogCafeInit();
+#endif
+
+    auto * frame = new MainWindow(system->getWidth(), system->getHeight(), system->getRenderer());
+    auto * frame2 = new MainComponents(system->getWidth(), system->getHeight(), system->getRenderer());
+    auto * controllerM = new ControllerManager(system->getWidth(), system->getHeight());
+
+
+#ifndef __WIIU__
+    // On non-Wii-U devices we expect a mouse.
+    controllerM->attachController(GuiTrigger::CHANNEL_1, new SDLControllerMouse(GuiTrigger::CHANNEL_1));
+    DEBUG_FUNCTION_LINE("Added mouse");
+#endif
+
+    while (true) {
+#ifdef __WIIU__
+        if(!WHBProcIsRunning()){
+            exit(0);
+            break;
+        }
+#endif
+        // Prepare to process new events.
+        controllerM->prepare();
+
+        bool quit = false;
+        SDL_Event e;
+        while (SDL_PollEvent(&e)) {
+            int32_t channel = -1;
+            SDL_JoystickID jId = -1;
+            if(e.type == SDL_JOYDEVICEADDED) {
+                controllerM->attachJoystick(e.jdevice.which);
+                continue;
+            }else if(e.type ==  SDL_JOYDEVICEREMOVED) {
+                auto j = SDL_JoystickFromInstanceID(e.jdevice.which);
+                if (j) {
+                    controllerM->detachJoystick(e.jdevice.which);
+                    SDL_JoystickClose(j);
+                    continue;
+                }
+            }else if (e.type == SDL_FINGERDOWN || e.type == SDL_FINGERUP || e.type == SDL_FINGERMOTION ||
+                e.type == SDL_MOUSEBUTTONDOWN || e.type == SDL_MOUSEBUTTONUP || e.type == SDL_MOUSEMOTION){
+                channel = GuiTrigger::CHANNEL_1;
+            } else if (e.type == SDL_JOYAXISMOTION) {
+                jId = e.jaxis.which;
+            } else if (e.type == SDL_JOYHATMOTION) {
+                jId = e.jhat.which;
+            }else if (e.type == SDL_JOYBUTTONDOWN || e.type == SDL_JOYBUTTONUP) {
+                jId = e.jbutton.which;
+            } else if (e.type == SDL_QUIT || (e.type == SDL_KEYUP && e.key.keysym.sym == SDLK_ESCAPE)) {
+                quit = true;
+                break;
+            }
+            controllerM->processEvent(jId, channel, &e);
+        }
+
+        if(quit){ break; }
+
+        // Finish controller inputs
+        controllerM->finish();
+
+        // Update gui elements based on controller inputs
+        controllerM->callPerController([frame](GuiController* controller) { frame->update(controller);});
+        controllerM->callPerController([frame2](GuiController* controller) { frame2->update(controller);});
+        frame->process();
+        frame2->process();
+        // clear the screen
+        SDL_RenderClear(system->getRenderer()->getRenderer());
+
+        frame->draw(system->getRenderer());
+
+        frame->updateEffects();
+        frame2->draw(system->getRenderer());
+
+        frame2->updateEffects();
+        
+        // flip the backbuffer
+        // this means that everything that we prepared behind the screens is actually shown
+        SDL_RenderPresent(system->getRenderer()->getRenderer());
+    }
+
+    delete frame;
+    delete frame2;
+    #ifdef __WIIU__
+    WHBProcShutdown();
+    #endif
+
+    return 0;
+}
