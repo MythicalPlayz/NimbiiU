@@ -39,16 +39,16 @@ MainComponents::MainComponents(int32_t w, int32_t h, Renderer* renderer) : GuiFr
     if (!ExitLabel) {DEBUG_FUNCTION_LINE("ERROR: LOADING TEXT FAILED");}
     ExitButton = new GuiButton(Image->getWidth(),Image->getHeight());
     this->append(ExitButton);
-    this->append(Image);
+    //this->append(Image);
     ExitButton->setAlignment(ALIGN_CENTERED);
     ExitButton->setImage(Image);
     ExitButton->setEffectGrow();
-    //ExitLabel->setAlignment(ALIGN_CENTERED);
-    //auto postionx = ExitButton->getOffsetX();
-    //auto postiony = ExitButton->getOffsetY();
-   // ExitLabel->setPosition(postionx,postiony + 50);
+    ExitLabel->setAlignment(ALIGN_CENTERED);
+    auto postionx = ExitButton->getOffsetX();
+    auto postiony = ExitButton->getOffsetY();
+    ExitLabel->setPosition(postionx,postiony + 50);
     ExitButton->setLabel(ExitLabel);
-    ExitLabel->setMaxWidth(ExitButton->getWidth());
+   ExitLabel->setMaxWidth(ExitButton->getWidth());
     touchTrigger = new GuiTrigger(GuiTrigger::CHANNEL_1, GuiTrigger::TOUCHED);
     buttonTrigger = new GuiTrigger(GuiTrigger::CHANNEL_ALL, GuiTrigger::BUTTON_A, true);
     ExitButton->setTrigger(touchTrigger);
@@ -62,5 +62,5 @@ void MainComponents::process() {
 void MainComponents::test(GuiButton *, const GuiController *, GuiTrigger *) {
         DEBUG_FUNCTION_LINE("Hello, you have clicked the button");
  //        button->setState(STATE_DISABLED,0);
- ExitButton->setVisible(false);
+ //ExitButton->setVisible(false);
 }
