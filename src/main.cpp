@@ -17,12 +17,12 @@
 #include <windows.h>
 #endif
 
-#ifdef __WIIU__
+//#ifdef __WIIU__
 #include <whb/log.h>
 #include <whb/log_cafe.h>
 #include <whb/log_udp.h>  
 #include <whb/proc.h>
-#endif
+//#endif
 
 
 int main(int argc, char *args[]) {
@@ -62,17 +62,16 @@ int main(int argc, char *args[]) {
     DEBUG_FUNCTION_LINE("Added mouse");
 #endif
 
-    while (true) {
-#ifdef __WIIU__
-        if(!WHBProcIsRunning()){
-            exit(0);
+
+      while (true) {
+bool quit = false;
+if(WHBProcIsRunning() == false){
+           exit(0);
             break;
-        }
-#endif
+            quit = true;
+       }
         // Prepare to process new events.
         controllerM->prepare();
-
-        bool quit = false;
         SDL_Event e;
         while (SDL_PollEvent(&e)) {
             int32_t channel = -1;
@@ -103,7 +102,7 @@ int main(int argc, char *args[]) {
             controllerM->processEvent(jId, channel, &e);
         }
 
-        if(quit){ break; }
+        if(quit){ exit(0); break; }
 
         // Finish controller inputs
         controllerM->finish();
@@ -127,12 +126,9 @@ int main(int argc, char *args[]) {
         // this means that everything that we prepared behind the screens is actually shown
         SDL_RenderPresent(system->getRenderer()->getRenderer());
     }
-
+    //Shutdown the program DOES WORK BUT ONLY WITH THE BUTTON RN
     delete frame;
     delete frame2;
-    #ifdef __WIIU__
     WHBProcShutdown();
-    #endif
-
     return 0;
 }

@@ -14,17 +14,12 @@ public:
 
     MainWindow(int32_t w, int32_t h, Renderer* renderer);
     void process() override;
-    GuiButton *button = nullptr;
 private:
     GuiText *label = nullptr;
     GuiTrigger *touchTrigger = nullptr;
     GuiTrigger *buttonTrigger = nullptr;
     GuiSound *sound = nullptr;
-   // GuiImage *image = nullptr;
-   // GuiImage *image2 = nullptr;
-   // GuiImage *image3 = nullptr;
-   // GuiImage *image4 = nullptr;
-    GuiImage *image5 = nullptr;
+    GuiImage *TitleImage = nullptr;
     
     GuiImage *bgImage = nullptr;
     GuiSound *bgMusic = nullptr;
