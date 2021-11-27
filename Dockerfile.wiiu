@@ -1,3 +1,0 @@
-FROM wiiuenv/devkitppc-with-sdl2:20201002
-
-WORKDIR project
