@@ -2,6 +2,7 @@
 #include "../resources/Resources.h"
 
 
+bool ShowTitle = true; //bool used to communicate between the static function (IDK if there is an efficent way than this)
 
 MainWindow::~MainWindow() {
     delete label;
@@ -13,6 +14,7 @@ MainWindow::~MainWindow() {
 }
 
 MainWindow::MainWindow(int32_t w, int32_t h, Renderer* renderer) : GuiFrame(w, h)  {
+    //Handles Background as well as Title Image
     auto picture_path = "Title.png";
     auto font_path = "Poppins.ttf";
     auto bgMusic_path = "bgMusic.ogg";
@@ -68,7 +70,7 @@ MainWindow::MainWindow(int32_t w, int32_t h, Renderer* renderer) : GuiFrame(w, h
 
 void MainWindow::process() {
     GuiFrame::process();
-
+TitleImage->setVisible(ShowTitle); //An Ugly but a Communicative way between MainComponents and MainWindow
  /*   if(!button){
         return;
     }
@@ -82,4 +84,7 @@ void MainWindow::process() {
     }
     button->setAngle(res);
     */
+}
+void MainWindow::MakeItemsVisible(bool b) {
+    ShowTitle = b;
 }

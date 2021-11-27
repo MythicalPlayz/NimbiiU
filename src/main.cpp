@@ -12,55 +12,27 @@
 #include <cstdio>
 #include <fcntl.h>
 
-
-#if defined _WIN32
-#include <windows.h>
-#endif
-
-//#ifdef __WIIU__
 #include <whb/log.h>
 #include <whb/log_cafe.h>
 #include <whb/log_udp.h>  
 #include <whb/proc.h>
-//#endif
+
 
 
 int main(int argc, char *args[]) {
     auto *system = new SDLSystem();
-#if defined _WIN32
-    // Create the Console
-    AllocConsole();
 
-    // Create Console Output Handle
-    HANDLE handle_out = GetStdHandle(STD_OUTPUT_HANDLE);
-    int hCrt = _open_osfhandle((intptr_t) handle_out, _O_TEXT);
-    FILE *hf_out = _fdopen(hCrt, "w");
-    setvbuf(hf_out, NULL, _IONBF, 1);
-    *stdout = *hf_out;
-
-    // Create Console Input Handle
-    HANDLE handle_in = GetStdHandle(STD_INPUT_HANDLE);
-    hCrt = _open_osfhandle((intptr_t) handle_in, _O_TEXT);
-    FILE *hf_in = _fdopen(hCrt, "r");
-    setvbuf(hf_in, NULL, _IONBF, 128);
-
-    *stdin = *hf_in;
-#elif __WIIU__
     WHBProcInit();
     WHBLogUdpInit();
     WHBLogCafeInit();
-#endif
+
 
     auto * frame = new MainWindow(system->getWidth(), system->getHeight(), system->getRenderer());
     auto * frame2 = new MainComponents(system->getWidth(), system->getHeight(), system->getRenderer());
     auto * controllerM = new ControllerManager(system->getWidth(), system->getHeight());
 
 
-#ifndef __WIIU__
-    // On non-Wii-U devices we expect a mouse.
-    controllerM->attachController(GuiTrigger::CHANNEL_1, new SDLControllerMouse(GuiTrigger::CHANNEL_1));
-    DEBUG_FUNCTION_LINE("Added mouse");
-#endif
+
 
 
       while (true) {

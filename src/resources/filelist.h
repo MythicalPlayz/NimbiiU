@@ -1,7 +1,7 @@
 /****************************************************************************
  * Resource files.
  * This file is generated automatically.
- * Includes 20 files.
+ * Includes 22 files.
  *
  * NOTE:
  * Any manual modification of this file will be overwriten by the generation.
@@ -25,9 +25,11 @@
 #include "InfoI1_png.h"
 #include "LAN0_png.h"
 #include "LAN1_png.h"
+#include "Light_ttf.h"
 #include "Poppins_ttf.h"
 #include "Quick0_png.h"
 #include "Quick1_png.h"
+#include "Status_success_mp3.h"
 #include "Success_png.h"
 #include "Title_png.h"
 
@@ -48,9 +50,11 @@ static RecourceFile RecourceList[] =
 	{"InfoI1.png", InfoI1_png, InfoI1_png_size, NULL, 0},
 	{"LAN0.png", LAN0_png, LAN0_png_size, NULL, 0},
 	{"LAN1.png", LAN1_png, LAN1_png_size, NULL, 0},
+	{"Light.ttf", Light_ttf, Light_ttf_size, NULL, 0},
 	{"Poppins.ttf", Poppins_ttf, Poppins_ttf_size, NULL, 0},
 	{"Quick0.png", Quick0_png, Quick0_png_size, NULL, 0},
 	{"Quick1.png", Quick1_png, Quick1_png_size, NULL, 0},
+	{"Status_success.mp3", Status_success_mp3, Status_success_mp3_size, NULL, 0},
 	{"Success.png", Success_png, Success_png_size, NULL, 0},
 	{"Title.png", Title_png, Title_png_size, NULL, 0},
 	{NULL, NULL, 0, NULL, 0}
@@ -87,12 +91,16 @@ extern uint8_t LAN0_png[];
 extern uint32_t LAN0_png_size;
 extern uint8_t LAN1_png[];
 extern uint32_t LAN1_png_size;
+extern uint8_t Light_ttf[];
+extern uint32_t Light_ttf_size;
 extern uint8_t Poppins_ttf[];
 extern uint32_t Poppins_ttf_size;
 extern uint8_t Quick0_png[];
 extern uint32_t Quick0_png_size;
 extern uint8_t Quick1_png[];
 extern uint32_t Quick1_png_size;
+extern uint8_t Status_success_mp3[];
+extern uint32_t Status_success_mp3_size;
 extern uint8_t Success_png[];
 extern uint32_t Success_png_size;
 extern uint8_t Title_png[];
@@ -115,9 +123,11 @@ static RecourceFile RecourceList[] =
 	{"InfoI1.png", (uint8_t*)&InfoI1_png, InfoI1_png_size, NULL, 0},
 	{"LAN0.png", (uint8_t*)&LAN0_png, LAN0_png_size, NULL, 0},
 	{"LAN1.png", (uint8_t*)&LAN1_png, LAN1_png_size, NULL, 0},
+	{"Light.ttf", (uint8_t*)&Light_ttf, Light_ttf_size, NULL, 0},
 	{"Poppins.ttf", (uint8_t*)&Poppins_ttf, Poppins_ttf_size, NULL, 0},
 	{"Quick0.png", (uint8_t*)&Quick0_png, Quick0_png_size, NULL, 0},
 	{"Quick1.png", (uint8_t*)&Quick1_png, Quick1_png_size, NULL, 0},
+	{"Status_success.mp3", (uint8_t*)&Status_success_mp3, Status_success_mp3_size, NULL, 0},
 	{"Success.png", (uint8_t*)&Success_png, Success_png_size, NULL, 0},
 	{"Title.png", (uint8_t*)&Title_png, Title_png_size, NULL, 0},
 	{NULL, NULL, 0, NULL, 0}

@@ -18,7 +18,7 @@ WUMS_ROOT := $(DEVKITPRO)/wums
 # DATA is a list of directories containing data files
 # INCLUDES is a list of directories containing header files
 #-------------------------------------------------------------------------------
-TARGET		:=	SDL2_Playground
+TARGET		:=	NetworkInstaller
 BUILD		:=	build
 SOURCES		:=	src \
 				src/gui \
@@ -26,6 +26,7 @@ SOURCES		:=	src \
 				src/input \
 				src/menu \
 				src/resources \
+				src/patch \
 				src/system \
 				src/system/video \
 				src/utils
