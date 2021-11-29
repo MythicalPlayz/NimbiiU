@@ -15,7 +15,7 @@
 #include <whb/log.h>
 #include <whb/log_cafe.h>
 #include <whb/log_udp.h>  
-#include <whb/proc.h>
+#include <proc.hpp>
 
 
 
@@ -37,7 +37,7 @@ int main(int argc, char *args[]) {
 
       while (true) {
 bool quit = false;
-if(WHBProcIsRunning() == false){
+if(ProcIsRunning() == false){
            exit(0);
             break;
             quit = true;
@@ -99,8 +99,9 @@ if(WHBProcIsRunning() == false){
         SDL_RenderPresent(system->getRenderer()->getRenderer());
     }
     //Shutdown the program DOES WORK BUT ONLY WITH THE BUTTON RN
+    //^ This should be fixed now
     delete frame;
     delete frame2;
-    WHBProcShutdown();
+    ProcShutdown();
     return 0;
 }
