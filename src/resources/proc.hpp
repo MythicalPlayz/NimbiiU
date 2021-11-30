@@ -14,4 +14,4 @@ void
 ProcShutdown();
 
 bool
-ProcIsRunning();
+ProcIsRunning(); 

@@ -15,14 +15,14 @@
 #include <whb/log.h>
 #include <whb/log_cafe.h>
 #include <whb/log_udp.h>  
-#include <proc.hpp>
+#include "resources/proc.hpp"
 
 
 
 int main(int argc, char *args[]) {
     auto *system = new SDLSystem();
 
-    WHBProcInit();
+    ProcInit();
     WHBLogUdpInit();
     WHBLogCafeInit();
 
@@ -99,7 +99,6 @@ if(ProcIsRunning() == false){
         SDL_RenderPresent(system->getRenderer()->getRenderer());
     }
     //Shutdown the program DOES WORK BUT ONLY WITH THE BUTTON RN
-    //^ This should be fixed now
     delete frame;
     delete frame2;
     ProcShutdown();

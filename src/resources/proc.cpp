@@ -84,7 +84,7 @@ bool
 ProcIsRunning()
 {
 	ProcUIStatus status;
-	
+
 	status = ProcUIProcessMessages(TRUE);
 	if (status == PROCUI_STATUS_EXITING) {
 		isRunning = FALSE;
@@ -92,11 +92,11 @@ ProcIsRunning()
 	else if (status == PROCUI_STATUS_RELEASE_FOREGROUND) {
 		ProcUIDrawDoneRelease();
 	}
-	
+
 	if (!isRunning)
 	{
 		ProcUIShutdown();
 	}
 
 	return isRunning;
-}
+} 

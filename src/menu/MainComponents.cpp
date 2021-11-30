@@ -4,7 +4,7 @@
 #include <whb/log.h>
 #include <whb/log_cafe.h>
 #include <whb/log_udp.h>  
-#include <proc.hpp>
+#include "../resources/proc.hpp"
 
 
 
@@ -83,7 +83,8 @@ void MainComponents::ExtraInfo(GuiButton *, const GuiController *, GuiTrigger *)
  MainWindow::MakeItemsVisible(false);
 }
 void MainComponents::Quick(GuiButton *, const GuiController *, GuiTrigger *) {
-auto r = IOSU_Kernel_Exploit(true,NULL);
+auto r = IOSU_Kernel_Exploit();
+//auto r2 = TitlePatch();
 if (r == 0) {
     auto SFXPATH = "Status_success.mp3";
 GuiSound *SFX = Resources::GetSound(SFXPATH);
