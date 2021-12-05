@@ -425,6 +425,9 @@ int __entry() {
 	bss_addr += bss_size;
 	memcpy((void*)bss_addr, CodeKernelCopyData, sizeof(CodeKernelCopyData));
 
+DCFlushRange((void*)bss_addr, sizeof(CodeKernelCopyData));
+ICInvalidateRange((void*)bss_addr, sizeof(CodeKernelCopyData));
+
     kern_write((void*)(0xFFE84C70 + (0x25 * 4)), bss_addr);
     kern_write((void*)(0xFFE85070 + (0x25 * 4)), bss_addr);
     kern_write((void*)(0xFFEAAA60 + (0x25 * 4)), bss_addr);
