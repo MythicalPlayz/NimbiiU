@@ -6,15 +6,13 @@
 #include "../utils/logger.h"
 #include "../gui/GuiImage.h"
 
+void MakeItemsVisible2(bool b);
 class MainWindow : public GuiFrame, public sigslot::has_slots<> {
 public:
 
     ~MainWindow() override;
-
     MainWindow(int32_t w, int32_t h, Renderer* renderer);
     void process() override;
-    static void MakeItemsVisible(bool b);
-    GuiImage *TitleImage = nullptr;
 
 private:
     GuiText *label = nullptr;

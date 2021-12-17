@@ -5,6 +5,8 @@
 #include "gui/GuiController.h"
 #include "menu/MainWindow.h"
 #include "menu/MainComponents.h"
+#include "menu/ExtraInfo.h"
+#include "menu/ButtonHandler.h"
 #include "input/SDLController.h"
 #include "input/SDLControllerMouse.h"
 #include "input/ControllerManager.h"
@@ -29,6 +31,8 @@ int main(int argc, char *args[]) {
 
     auto * frame = new MainWindow(system->getWidth(), system->getHeight(), system->getRenderer());
     auto * frame2 = new MainComponents(system->getWidth(), system->getHeight(), system->getRenderer());
+    auto * frame3 = new ExtraInfo(system->getWidth(), system->getHeight(), system->getRenderer());
+    auto * controllerframe = new ButtonHandler(system->getWidth(), system->getHeight(), system->getRenderer());
     auto * controllerM = new ControllerManager(system->getWidth(), system->getHeight());
 
 
@@ -82,8 +86,12 @@ if(ProcIsRunning() == false){
         // Update gui elements based on controller inputs
         controllerM->callPerController([frame](GuiController* controller) { frame->update(controller);});
         controllerM->callPerController([frame2](GuiController* controller) { frame2->update(controller);});
+        controllerM->callPerController([frame3](GuiController* controller) { frame3->update(controller);});
+        controllerM->callPerController([controllerframe](GuiController* controller) { controllerframe->update(controller);});
         frame->process();
         frame2->process();
+        frame3->process();
+        controllerframe->process();
         // clear the screen
         SDL_RenderClear(system->getRenderer()->getRenderer());
 
@@ -93,7 +101,12 @@ if(ProcIsRunning() == false){
         frame2->draw(system->getRenderer());
 
         frame2->updateEffects();
-        
+        frame3->draw(system->getRenderer());
+
+        frame3->updateEffects();
+        controllerframe->draw(system->getRenderer());
+
+        controllerframe->updateEffects();
         // flip the backbuffer
         // this means that everything that we prepared behind the screens is actually shown
         SDL_RenderPresent(system->getRenderer()->getRenderer());
@@ -101,6 +114,8 @@ if(ProcIsRunning() == false){
     //Shutdown the program DOES WORK BUT ONLY WITH THE BUTTON RN
     delete frame;
     delete frame2;
+    delete frame3;
+    delete controllerframe;
     ProcShutdown();
     return 0;
 }
