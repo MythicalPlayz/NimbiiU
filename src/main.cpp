@@ -13,20 +13,24 @@
 
 #include <cstdio>
 #include <fcntl.h>
+#include <sysapp/launch.h>
 
 #include <whb/log.h>
 #include <whb/log_cafe.h>
 #include <whb/log_udp.h>  
 #include "resources/proc.hpp"
 
+bool IsGoingToTheMenu = false;
 
 
 int main(int argc, char *args[]) {
-    auto *system = new SDLSystem();
-
     ProcInit();
     WHBLogUdpInit();
     WHBLogCafeInit();
+
+    auto *system = new SDLSystem();
+
+    
 
 
     auto * frame = new MainWindow(system->getWidth(), system->getHeight(), system->getRenderer());
@@ -40,6 +44,11 @@ int main(int argc, char *args[]) {
 
 
       while (true) {
+          if (ReturnToMenu()  && !IsGoingToTheMenu){
+               IsGoingToTheMenu = true;
+            SYSLaunchMenu();
+            ProcShutdown();
+          }
 bool quit = false;
 if(ProcIsRunning() == false){
            exit(0);
@@ -116,6 +125,6 @@ if(ProcIsRunning() == false){
     delete frame2;
     delete frame3;
     delete controllerframe;
-    ProcShutdown();
+    //ProcShutdown();
     return 0;
 }

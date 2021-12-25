@@ -23,7 +23,9 @@ GuiText *SystemInfo1 = nullptr;
 GuiText *Credits = nullptr;
 
 ExtraInfo::~ExtraInfo(){
-
+    delete touchTrigger;
+    delete sound;
+    delete buttonTrigger;
 }
 ExtraInfo::ExtraInfo(int32_t w, int32_t h, Renderer* renderer) : GuiFrame(w, h){
 

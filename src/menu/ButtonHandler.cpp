@@ -1,8 +1,18 @@
 #include "ButtonHandler.h"
 bool IsButtonSelected = false;
+#ifdef __NONCHANNEL__
+int MaxNumberForMiddle = 3;
+#else
+int MaxNumberForMiddle = 2;
+#endif
+
 int ButtonID = 0;
 ButtonHandler::~ButtonHandler(){
  delete Gamebutton;
+ delete UpTrigger;
+ delete DownTrigger;
+ delete LeftTrigger;
+ delete RightTrigger;
 }
 ButtonHandler::ButtonHandler(int32_t w, int32_t h, Renderer* renderer) : GuiFrame(w, h){
 
@@ -32,11 +42,11 @@ void ButtonHandler::GameControllerInput(GuiButton *, const GuiController * t, Gu
         SetActiveButton(2);
     }
     else if (Trigger == RightTrigger){
-        if (ButtonID < 3){ButtonID += 1;}
+        if (ButtonID < MaxNumberForMiddle){ButtonID += 1;}
         SetActiveButton(ButtonID);
     }
     else if (Trigger == LeftTrigger){
-        if (ButtonID > 1){ButtonID -= 1;}
+        if (ButtonID > 1 && ButtonID != 4){ButtonID -= 1;}
         SetActiveButton(ButtonID);
     }
     else if (Trigger == DownTrigger){

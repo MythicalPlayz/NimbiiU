@@ -4,7 +4,8 @@
 #include "../resources/Resources.h"
 #include <whb/log.h>
 #include <whb/log_cafe.h>
-#include <whb/log_udp.h>  
+#include <whb/log_udp.h>
+#include <sysapp/launch.h>
 #include "../resources/proc.hpp"
 #include "../gui/GuiElement.h"
     Renderer *Render;
@@ -16,18 +17,33 @@
     int OLDBUTTONID = 0;
     GuiTrigger *NTrigger;
     GuiTrigger *ATrigger;
+    bool GoBackToMenu = false;
+
+#ifdef __NONCHANNEL__
+
+float QuickXLocation = -300;
+float AdvancedXLocation = 0;
+
+#else
+
+float QuickXLocation = -150;
+float AdvancedXLocation = 150;
+
+#endif
 
 MainComponents::~MainComponents() {
-    delete ExitButton;
+    //delete ExitButton;
     delete ExitImage;
     delete ExitLabel;
-    delete AdvancedButton;
+    //delete AdvancedButton;
     delete AdvancedImage;
     delete AdvancedLabel;
-    delete QuickButton;
+    //delete QuickButton;
     delete QuickImage;
     delete QuickLabel;
     delete SFX;
+    delete sound;
+    delete touchTrigger;
 }
 MainComponents::MainComponents(int32_t w, int32_t h, Renderer* renderer) : GuiFrame(w, h) {
     auto Exit0_Path = "Exit0.png";
@@ -56,32 +72,32 @@ MainComponents::MainComponents(int32_t w, int32_t h, Renderer* renderer) : GuiFr
     auto res = FC_LoadFontFromTTF(fc_font, renderer->getRenderer(), font, {255, 255, 255, 255});
     DEBUG_FUNCTION_LINE("FontCache init %d", res);
 
-
+#ifdef __NONCHANNEL__
     ExitLabel = new GuiText("Exit Installer", {255, 255, 0, 255}, fc_font);
     if (!ExitLabel) {DEBUG_FUNCTION_LINE("ERROR: LOADING TEXT FAILED"); return;}
     ExitImage = new GuiImage(Resources::GetTexture(Exit0_Path));
     if (!ExitImage) {  DEBUG_FUNCTION_LINE("Failed to add image"); return;}
     ExitButton = new GuiButton(ExitImage->getWidth(),ExitImage->getHeight());
     CreateButton(ExitButton,ExitImage,ExitLabel,300,0,0,50);
-
+    ExitButton->clicked.connect(this, &MainComponents::Exit);
+#endif
     QuickLabel = new GuiText("Quick Install", {255, 255, 0, 255}, fc_font);
     if (!QuickLabel) {DEBUG_FUNCTION_LINE("ERROR: LOADING TEXT FAILED"); return;}
     QuickImage = new GuiImage(Resources::GetTexture(Quick0_Path));
     if (!QuickImage) {  DEBUG_FUNCTION_LINE("Failed to add image"); return;}
     QuickButton = new GuiButton(QuickImage->getWidth(),QuickImage->getHeight());
-    CreateButton(QuickButton,QuickImage,QuickLabel,-300,0,0,50);
+    CreateButton(QuickButton,QuickImage,QuickLabel,QuickXLocation,0,0,50);
 
     AdvancedLabel = new GuiText("Advanced", {255, 255, 0, 255}, fc_font);
     if (!AdvancedLabel) {DEBUG_FUNCTION_LINE("ERROR: LOADING TEXT FAILED"); return;}
     AdvancedImage = new GuiImage(Resources::GetTexture(Advanced0_Path));
     if (!AdvancedImage) {  DEBUG_FUNCTION_LINE("Failed to add image"); return;}
     AdvancedButton = new GuiButton(AdvancedImage->getWidth(),AdvancedImage->getHeight());
-    CreateButton(AdvancedButton,AdvancedImage,AdvancedLabel,0,0,0,50);
+    CreateButton(AdvancedButton,AdvancedImage,AdvancedLabel,AdvancedXLocation,0,0,50);
     CreateMiscs(renderer);
 
     ATrigger = new GuiTrigger(GuiTrigger::CHANNEL_ALL,GuiTrigger::BUTTON_A,true);
     NTrigger = new GuiTrigger(GuiTrigger::CHANNEL_ALL,GuiTrigger::BUTTON_NONE,true);
-    ExitButton->clicked.connect(this, &MainComponents::Exit);
     QuickButton->clicked.connect(this, &MainComponents::Quick);
     AdvancedButton->clicked.connect(this, &MainComponents::Advanced);
     
@@ -92,8 +108,15 @@ void MainComponents::process() {
 // Functions of Buttons
 void MainComponents::Exit(GuiButton *, const GuiController *, GuiTrigger *) {
    
+   SFX->Stop();
+   StopSound();
+     if (IsRunningFromHomeBrew) {
    ProcShutdown();
- 
+    }
+    else{
+        GoBackToMenu = true;
+    }
+   
 }
 void MainComponents::ExtraInfo(GuiButton *, const GuiController *, GuiTrigger *){
  MakeItemsVisible(false);
@@ -107,7 +130,7 @@ SFX->Play();
 }
 }
 void MainComponents::Advanced(GuiButton *, const GuiController *, GuiTrigger *) {
-    //SDL_StartTextInput();
+   // SDL_StartTextInput();
 }
 //
 void MainComponents::CreateButton(GuiButton * Button,GuiImage * Image, GuiText * Text,float WidthOffset,float HeightOffset,float TextOffsetX,float TextOffsetY){   
@@ -171,12 +194,16 @@ void MakeItemsVisible(bool b) {
     InfoButton->setState(GuiElement::STATE_HIDDEN,0);
     QuickButton->setState(GuiElement::STATE_HIDDEN,0);
     AdvancedButton->setState(GuiElement::STATE_HIDDEN,0);
+    #ifdef __NONCHANNEL__
     ExitButton->setState(GuiElement::STATE_HIDDEN,0);
+    #endif
     }else{
     InfoButton->resetState();
     QuickButton->resetState();
     AdvancedButton->resetState();
+    #ifdef __NONCHANNEL__
     ExitButton->resetState();
+    #endif
     }     
      InfoImageIcon->setVisible(b);
 }
@@ -184,7 +211,9 @@ void SetActiveButton(int BUTTONID){
     if (OLDBUTTONID > 0) {ChangeButtonImage(false,GetButtonFromID(OLDBUTTONID));}
     if (BUTTONID == 1){OLDBUTTONID = ChangeButtonImage(true,QuickButton);}
    else if (BUTTONID == 2){OLDBUTTONID = ChangeButtonImage(true,AdvancedButton);}
+   #ifdef __NONCHANNEL__ 
    else if (BUTTONID == 3){OLDBUTTONID = ChangeButtonImage(true,ExitButton);}
+   #endif
    else if (BUTTONID == 4){OLDBUTTONID = ChangeButtonImage(true,InfoButton);}
 }
 int ChangeButtonImage(bool IsSelected,GuiButton * Button)
@@ -248,10 +277,15 @@ GuiButton* GetButtonFromID(int ID){
     GuiButton * Button;
     if (ID == 1){Button = QuickButton;}
     else if (ID == 2){Button = AdvancedButton;}
+ #ifdef __NONCHANNEL__
     else if (ID == 3){Button = ExitButton;}
+    #endif
     else if (ID == 4){Button = InfoButton;}
     return Button;
 }
 bool IsMainVisible(){
-    return ExitButton->isVisible();
+    return QuickButton->isVisible();
+}
+bool ReturnToMenu(){
+    return GoBackToMenu;
 }

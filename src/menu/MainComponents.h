@@ -11,6 +11,7 @@ void SetActiveButton(int BUTTONID);
 bool IsMainVisible();
 GuiButton* GetButtonFromID(int ID);
 int ChangeButtonImage(bool IsSelected,GuiButton * Button);
+bool ReturnToMenu();
 class MainComponents : public GuiFrame, public sigslot::has_slots<>{
 public:
 void Exit(GuiButton *, const GuiController *, GuiTrigger *);
@@ -21,7 +22,6 @@ void Quick(GuiButton *, const GuiController *, GuiTrigger *);
     MainComponents(int32_t w, int32_t h, Renderer* renderer);
     void process() override;
 private:
-bool LP = false;
 GuiText *ExitLabel = nullptr;
 GuiText *AdvancedLabel = nullptr;
 GuiText *QuickLabel = nullptr;

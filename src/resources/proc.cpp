@@ -28,6 +28,9 @@ isRunning = FALSE;
 static bool
 fromHBL = FALSE;
 
+static bool
+CLOSED = FALSE;
+
 static uint32_t
 procSaveCallback(void *context)
 {
@@ -52,11 +55,12 @@ ProcInit()
 		titleID == MII_MAKER_EUR_TITLE_ID)
 	{
 		fromHBL = TRUE;
+		OSEnableHomeButtonMenu(FALSE);
 	}
 
 	isRunning = TRUE;
 
-	OSEnableHomeButtonMenu(FALSE);
+	
 
 	ProcUIInitEx(&procSaveCallback, NULL);
 
@@ -72,11 +76,13 @@ Need to find out proper quitting for channels/.wuhbs without requiring the Home 
 void
 ProcShutdown()
 {
+	CLOSED = TRUE;
 	isRunning = FALSE;
 
 	if (fromHBL)
 	{
 		SYSRelaunchTitle(0, NULL);
+		//SYSLaunchMenu();
 	}
 }
 
@@ -96,7 +102,9 @@ ProcIsRunning()
 	if (!isRunning)
 	{
 		ProcUIShutdown();
-	}
+	} 
 
 	return isRunning;
 } 
+bool
+IsRunningFromHomeBrew() {return fromHBL;}

@@ -15,3 +15,5 @@ ProcShutdown();
 
 bool
 ProcIsRunning(); 
+bool
+IsRunningFromHomeBrew();

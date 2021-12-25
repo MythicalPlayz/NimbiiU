@@ -1,12 +1,14 @@
 #include "iosu_kernel.h"
+#ifdef __NONAROMA__
 #include "title_patcher.h"
 #include "elf_abi.h"
+#endif
 #include "../utils/logger.h"
 #include <whb/file.h>
 #include <coreinit/thread.h>
-#include <coreinit/IOS.h>
-#include <coreinit/Cache.h>
-#include <coreinit/MemoryMap.h>
+#include <coreinit/ios.h>
+#include <coreinit/cache.h>
+#include <coreinit/memorymap.h>
 #include <string.h>
 #include <stddef.h>
 #include <stdint.h>
@@ -14,10 +16,10 @@
 //#ifdef __cplusplus
 //extern "C"{
 //#endif
-
+#ifdef __NONAROMA__
 extern "C" void kern_write(void *addr, uint32_t value); 
 extern "C" void SC_KernelCopyData(void* dst, void* src, size_t size);
-
+#endif
 int USB_Write32(int fd, uint32_t *someOtherPointer, uint32_t addr, uint32_t value) {
 
     uint32_t input[2] = {0xFFF415D4, value};
@@ -281,11 +283,13 @@ int IOSU_Kernel_Exploit() {
     } */
     DEBUG_FUNCTION_LINE("IOSU Exploit worked\n");
     IOS_Close(fd);
+    #ifdef __NONAROMA__
     __entry();
+    #endif
 return Result;
 }
 
-
+#ifdef __NONAROMA__
 uint32_t get_section(uint8_t *data, char *name, uint32_t *size, uint32_t *addr)
 {
     Elf32_Ehdr *ehdr = (Elf32_Ehdr *)data;
@@ -459,6 +463,7 @@ ICInvalidateRange((void*)bss_addr, sizeof(CodeKernelCopyData));
 
     return 0;
 }
+#endif
 //#ifdef __cplusplus
 //}
 //#endif

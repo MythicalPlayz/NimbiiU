@@ -10,8 +10,9 @@
 //#include "link.ld" 
 //#include "../menu/MainComponents.h"
 extern "C" int IOSU_Kernel_Exploit();
+#ifdef __NONAROMA__
 extern "C" int __entry();
-
+#endif
 
   //  void SC_KernelCopyData(void* dst, void* src, size_t size);
  //void KernelCopyData(uint32_t dst, uint32_t src, size_t size);

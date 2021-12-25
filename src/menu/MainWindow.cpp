@@ -3,14 +3,14 @@
 
 
 GuiImage *TitleImage;
-
+GuiSound *bgMusic;
 MainWindow::~MainWindow() {
     delete label;
     delete touchTrigger;
     delete buttonTrigger;
     delete sound;
     delete TitleImage;
-    delete bgMusic;
+    delete bgImage;
 }
 
 MainWindow::MainWindow(int32_t w, int32_t h, Renderer* renderer) : GuiFrame(w, h)  {
@@ -75,4 +75,7 @@ void MainWindow::process() {
 
 void MakeItemsVisible2(bool b) {
     TitleImage->setVisible(b);
+}
+void StopSound(){
+    bgMusic->Stop();
 }

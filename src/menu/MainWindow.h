@@ -7,6 +7,7 @@
 #include "../gui/GuiImage.h"
 
 void MakeItemsVisible2(bool b);
+void StopSound();
 class MainWindow : public GuiFrame, public sigslot::has_slots<> {
 public:
 
@@ -20,5 +21,4 @@ private:
     GuiTrigger *buttonTrigger = nullptr;
     GuiSound *sound = nullptr;
     GuiImage *bgImage = nullptr;
-    GuiSound *bgMusic = nullptr;
 };
