@@ -6,21 +6,19 @@
 #include "../utils/logger.h"
 #include "../gui/GuiImage.h"
 
+void MakeItemsVisible2(bool b);
+void StopSound();
 class MainWindow : public GuiFrame, public sigslot::has_slots<> {
 public:
-   // void test(GuiButton *, const GuiController *, GuiTrigger *);
 
     ~MainWindow() override;
-
     MainWindow(int32_t w, int32_t h, Renderer* renderer);
     void process() override;
+
 private:
     GuiText *label = nullptr;
     GuiTrigger *touchTrigger = nullptr;
     GuiTrigger *buttonTrigger = nullptr;
     GuiSound *sound = nullptr;
-    GuiImage *TitleImage = nullptr;
-    
     GuiImage *bgImage = nullptr;
-    GuiSound *bgMusic = nullptr;
 };

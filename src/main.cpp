@@ -5,67 +5,52 @@
 #include "gui/GuiController.h"
 #include "menu/MainWindow.h"
 #include "menu/MainComponents.h"
+#include "menu/ExtraInfo.h"
+#include "menu/ButtonHandler.h"
 #include "input/SDLController.h"
 #include "input/SDLControllerMouse.h"
 #include "input/ControllerManager.h"
 
 #include <cstdio>
 #include <fcntl.h>
+#include <sysapp/launch.h>
 
-
-#if defined _WIN32
-#include <windows.h>
-#endif
-
-//#ifdef __WIIU__
 #include <whb/log.h>
 #include <whb/log_cafe.h>
 #include <whb/log_udp.h>  
-#include <whb/proc.h>
-//#endif
+#include "resources/proc.hpp"
+
+bool IsGoingToTheMenu = false;
 
 
 int main(int argc, char *args[]) {
-    auto *system = new SDLSystem();
-#if defined _WIN32
-    // Create the Console
-    AllocConsole();
-
-    // Create Console Output Handle
-    HANDLE handle_out = GetStdHandle(STD_OUTPUT_HANDLE);
-    int hCrt = _open_osfhandle((intptr_t) handle_out, _O_TEXT);
-    FILE *hf_out = _fdopen(hCrt, "w");
-    setvbuf(hf_out, NULL, _IONBF, 1);
-    *stdout = *hf_out;
-
-    // Create Console Input Handle
-    HANDLE handle_in = GetStdHandle(STD_INPUT_HANDLE);
-    hCrt = _open_osfhandle((intptr_t) handle_in, _O_TEXT);
-    FILE *hf_in = _fdopen(hCrt, "r");
-    setvbuf(hf_in, NULL, _IONBF, 128);
-
-    *stdin = *hf_in;
-#elif __WIIU__
-    WHBProcInit();
+    ProcInit();
     WHBLogUdpInit();
     WHBLogCafeInit();
-#endif
+
+    auto *system = new SDLSystem();
+
+    
+
 
     auto * frame = new MainWindow(system->getWidth(), system->getHeight(), system->getRenderer());
     auto * frame2 = new MainComponents(system->getWidth(), system->getHeight(), system->getRenderer());
+    auto * frame3 = new ExtraInfo(system->getWidth(), system->getHeight(), system->getRenderer());
+    auto * controllerframe = new ButtonHandler(system->getWidth(), system->getHeight(), system->getRenderer());
     auto * controllerM = new ControllerManager(system->getWidth(), system->getHeight());
 
 
-#ifndef __WIIU__
-    // On non-Wii-U devices we expect a mouse.
-    controllerM->attachController(GuiTrigger::CHANNEL_1, new SDLControllerMouse(GuiTrigger::CHANNEL_1));
-    DEBUG_FUNCTION_LINE("Added mouse");
-#endif
+
 
 
       while (true) {
+          if (ReturnToMenu()  && !IsGoingToTheMenu){
+               IsGoingToTheMenu = true;
+            SYSLaunchMenu();
+            ProcShutdown();
+          }
 bool quit = false;
-if(WHBProcIsRunning() == false){
+if(ProcIsRunning() == false){
            exit(0);
             break;
             quit = true;
@@ -110,8 +95,12 @@ if(WHBProcIsRunning() == false){
         // Update gui elements based on controller inputs
         controllerM->callPerController([frame](GuiController* controller) { frame->update(controller);});
         controllerM->callPerController([frame2](GuiController* controller) { frame2->update(controller);});
+        controllerM->callPerController([frame3](GuiController* controller) { frame3->update(controller);});
+        controllerM->callPerController([controllerframe](GuiController* controller) { controllerframe->update(controller);});
         frame->process();
         frame2->process();
+        frame3->process();
+        controllerframe->process();
         // clear the screen
         SDL_RenderClear(system->getRenderer()->getRenderer());
 
@@ -121,7 +110,12 @@ if(WHBProcIsRunning() == false){
         frame2->draw(system->getRenderer());
 
         frame2->updateEffects();
-        
+        frame3->draw(system->getRenderer());
+
+        frame3->updateEffects();
+        controllerframe->draw(system->getRenderer());
+
+        controllerframe->updateEffects();
         // flip the backbuffer
         // this means that everything that we prepared behind the screens is actually shown
         SDL_RenderPresent(system->getRenderer()->getRenderer());
@@ -129,6 +123,8 @@ if(WHBProcIsRunning() == false){
     //Shutdown the program DOES WORK BUT ONLY WITH THE BUTTON RN
     delete frame;
     delete frame2;
-    WHBProcShutdown();
+    delete frame3;
+    delete controllerframe;
+    //ProcShutdown();
     return 0;
 }

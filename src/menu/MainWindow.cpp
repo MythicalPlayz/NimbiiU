@@ -2,17 +2,19 @@
 #include "../resources/Resources.h"
 
 
-
+GuiImage *TitleImage;
+GuiSound *bgMusic;
 MainWindow::~MainWindow() {
     delete label;
     delete touchTrigger;
     delete buttonTrigger;
     delete sound;
     delete TitleImage;
-    delete bgMusic;
+    delete bgImage;
 }
 
 MainWindow::MainWindow(int32_t w, int32_t h, Renderer* renderer) : GuiFrame(w, h)  {
+    //Handles Background as well as Title Image
     auto picture_path = "Title.png";
     auto font_path = "Poppins.ttf";
     auto bgMusic_path = "bgMusic.ogg";
@@ -64,22 +66,16 @@ MainWindow::MainWindow(int32_t w, int32_t h, Renderer* renderer) : GuiFrame(w, h
     }
     bgMusic->SetLoop(true);
     bgMusic->Play();
+
 }
 
 void MainWindow::process() {
     GuiFrame::process();
+}
 
- /*   if(!button){
-        return;
-    }
-    // Rotate the button for fun.
-    auto res = button->getAngle() + 0.5f;
-    if(res > 360){
-        res = 0;
-  //  auto x = button->GetPositionX();
-   // auto y = button->GetPositionY();
-   // button->setPosition(x+1,y+1);
-    }
-    button->setAngle(res);
-    */
+void MakeItemsVisible2(bool b) {
+    TitleImage->setVisible(b);
+}
+void StopSound(){
+    bgMusic->Stop();
 }
