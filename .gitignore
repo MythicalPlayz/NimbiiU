@@ -31,3 +31,7 @@
 *.out
 *.app
 *.elf
+
+#folders
+.vscode/
+build/

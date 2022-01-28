@@ -29,12 +29,14 @@ SOURCES		:=	src \
 				src/patch \
 				src/system \
 				src/system/video \
-				src/utils
+				src/utils \
+				ext/libiosuhax/source
 DATA		:=	data \
 				data/images \
 				data/sounds \
 				data/fonts
-INCLUDES	:=	source
+INCLUDES	:=	source \
+				ext/libiosuhax/include
 
 #-------------------------------------------------------------------------------
 # options for code generation
@@ -49,14 +51,14 @@ CXXFLAGS	:= $(CFLAGS) -std=c++20 -D__LOGGING__  -D__NONAROMA__ -D__NONCHANNEL__
 ASFLAGS	:=	-g $(ARCH) -mregnames
 LDFLAGS	=	-g $(ARCH) $(RPXSPECS) -Wl,-Map,$(notdir $*.map)
 
-LIBS   :=   `$(PREFIX)pkg-config --libs SDL2_mixer SDL2_ttf SDL2_image`
+LIBS   :=   `$(PREFIX)pkg-config --libs SDL2_mixer SDL2_ttf SDL2_image` -liosuhax
 Q := @
 MAKEFLAGS += --no-print-directory
 #-------------------------------------------------------------------------------
 # list of directories containing libraries, this must be the top level
 # containing include and lib
 #-------------------------------------------------------------------------------
-LIBDIRS	:= $(PORTLIBS) $(WUT_ROOT) $(WUMS_ROOT) $(CURDIR)
+LIBDIRS	:= $(PORTLIBS) $(WUT_ROOT) $(WUMS_ROOT) $(CURDIR) $(WUT_ROOT)/usr/
 
 #-------------------------------------------------------------------------------
 # no real need to edit anything past this point unless you need to add additional

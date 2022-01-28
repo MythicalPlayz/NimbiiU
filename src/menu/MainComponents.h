@@ -5,7 +5,8 @@
 #include "../utils/logger.h"
 #include "../gui/GuiImage.h"
 #include "../gui/GuiButton.h"
-#include "../patch/iosu_kernel.h"
+#include "../patch/patch.h"
+
 void MakeItemsVisible(bool b);
 void SetActiveButton(int BUTTONID);
 bool IsMainVisible();

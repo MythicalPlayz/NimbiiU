@@ -124,7 +124,7 @@ void MainComponents::ExtraInfo(GuiButton *, const GuiController *, GuiTrigger *)
  MakeItemsVisible3(true);
 }
 void MainComponents::Quick(GuiButton *, const GuiController *, GuiTrigger *) {
-auto r = IOSU_Kernel_Exploit();
+auto r = MainPatch();
 if (r == 0) {
 SFX->Play();
 }
